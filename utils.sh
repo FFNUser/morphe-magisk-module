@@ -169,14 +169,16 @@ config_update() {
 		t=$(toml_get_table "$table_name")
 		enabled=$(toml_get "$t" enabled) || enabled=true
 		if [ "$enabled" = "false" ]; then continue; fi
-				VERSION=$(toml_get "$t" version) || VERSION="auto"
+		VERSION=$(toml_get "$t" version) || VERSION="auto"
 		if [ "$VERSION" = "uptodown_latest" ]; then
 			UPTODOWN_URL=$(toml_get "$t" uptodown-dlurl) || UPTODOWN_URL=""
 			if [ -n "$UPTODOWN_URL" ]; then
 				if get_uptodown_resp "${UPTODOWN_URL%/}"; then
 					LATEST_APP_VER=$(get_uptodown_vers | awk '{$1=$1}1' | head -1)
 					if [ -n "$LATEST_APP_VER" ]; then
-						local APP_VER_SEARCH="^${table_name}: ${LATEST_APP_VER// /}"
+						LATEST_APP_VER="${LATEST_APP_VER// /}"
+						__TOML__=$(jq -c ".[\"${table_name}\"].version = \"${LATEST_APP_VER}\"" <<<"$__TOML__")
+						local APP_VER_SEARCH="^${table_name}: ${LATEST_APP_VER}"
 						if ! grep -qm1 "$APP_VER_SEARCH" build.md; then
 							prcfg=true
 							upped+=("$table_name")
@@ -184,8 +186,7 @@ config_update() {
 					fi
 				fi
 			fi
-		fi
-		PATCHES_SRC=$(toml_get "$t" patches-source) || PATCHES_SRC=$DEF_PATCHES_SRC
+		fi_SRC=$(toml_get "$t" patches-source) || PATCHES_SRC=$DEF_PATCHES_SRC
 		PATCHES_VER=$(toml_get "$t" patches-version) || PATCHES_VER=$DEF_PATCHES_VER
 		if [[ -v sources["$PATCHES_SRC/$PATCHES_VER"] ]]; then
 			if [ "${sources["$PATCHES_SRC/$PATCHES_VER"]}" = 1 ]; then upped+=("$table_name"); fi
