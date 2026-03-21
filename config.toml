@@ -8,11 +8,11 @@ parallel-jobs = 1
 
 [YouTube-Morphe]
 app-name = "YouTube"
+version = "latest"
 patches-source = "MorpheApp/morphe-patches"
 cli-source = "MorpheApp/morphe-cli"
 rv-brand = "Morphe"
 build-mode = "module"
-version = "latest"
 patches-version = "dev"
 arch = "arm64-v8a"
 apkmirror-dlurl = "https://www.apkmirror.com/apk/google-inc/youtube"
@@ -23,13 +23,13 @@ patcher-args = "-e 'Theme' -OdarkThemeBackgroundColor=@android:color/system_neut
 
 [Music-Morphe]
 app-name = "Music"
+version = "latest"
 patches-source = "MorpheApp/morphe-patches"
 cli-source = "MorpheApp/morphe-cli"
 rv-brand = "Morphe"
 patches-version = "dev"
 arch = "arm64-v8a"
 build-mode = "module"
-version = "latest"
 excluded-patches = "'Custom branding' 'Disable DRC audio' 'Disable QUIC protocol' 'Enable debugging' 'GmsCore support'"
 patcher-args = "-e 'Theme' -OdarkThemeBackgroundColor=@android:color/system_neutral1_900"
 apkmirror-dlurl = "https://www.apkmirror.com/apk/google-inc/youtube-music"
