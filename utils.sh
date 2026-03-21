@@ -186,6 +186,7 @@ config_update() {
 					fi
 				fi
 			fi
+		fi
 		fi_SRC=$(toml_get "$t" patches-source) || PATCHES_SRC=$DEF_PATCHES_SRC
 		PATCHES_VER=$(toml_get "$t" patches-version) || PATCHES_VER=$DEF_PATCHES_VER
 		if [[ -v sources["$PATCHES_SRC/$PATCHES_VER"] ]]; then
