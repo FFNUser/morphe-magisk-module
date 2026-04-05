@@ -1,6 +1,6 @@
 {
-  "version": "v9.13.50 (patches dev.5.mpp)",
-  "versionCode": 15,
-  "zipUrl": "https://github.com/FFNUser/morphe-magisk-module/releases/download/15/music-morphe-module-v9.13.50-arm64-v8a.zip",
+  "version": "v7.13.52 (patches dev.6.mpp)",
+  "versionCode": 16,
+  "zipUrl": "https://github.com/FFNUser/morphe-magisk-module/releases/download/16/music-morphe-module-v7.13.52-arm64-v8a.zip",
   "changelog": "https://raw.githubusercontent.com/FFNUser/morphe-magisk-module/update/build.md"
 }
