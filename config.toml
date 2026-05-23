@@ -16,7 +16,7 @@ build-mode = "module"
 patches-version = "dev"
 arch = "arm64-v8a"
 uptodown-dlurl = "https://youtube.en.uptodown.com/android"
-excluded-patches = "'Alternative thumbnails' 'Ambient mode' 'Change form factor' 'Change start page' 'Copy video URL' 'Custom branding' 'Custom player overlay opacity' 'Disable DRC audio' 'Disable QUIC protocol' 'Disable rolling number animations' 'Disable video codecs' 'Enable debugging' 'Exit fullscreen mode' 'GmsCore support' 'Hide autoplay preview' 'Open videos fullscreen' 'Override YouTube Music actions' 'Seekbar' 'Shorts autoplay'"
+excluded-patches = "'Alternative thumbnails' 'Ambient mode' 'Change form factor' 'Change start page' 'Copy video URL' 'Custom branding' 'Custom player overlay opacity' 'Disable DRC audio' 'Disable QUIC protocol' 'Disable rolling number animations' 'Disable video codecs' 'Enable debugging' 'Exit fullscreen mode' 'Hide autoplay preview' 'Open videos fullscreen' 'Override YouTube Music actions' 'Seekbar' 'Shorts autoplay'"
 patcher-args = "-e 'Theme' -OdarkThemeBackgroundColor=@android:color/system_neutral1_900 -OlightThemeBackgroundColor=@android:color/system_neutral1_100"
 
 [Music-Morphe]
@@ -28,7 +28,7 @@ rv-brand = "Morphe"
 patches-version = "dev"
 arch = "arm64-v8a"
 build-mode = "module"
-excluded-patches = "'Custom branding' 'Disable DRC audio' 'Disable QUIC protocol' 'Enable debugging' 'GmsCore support'"
+excluded-patches = "'Custom branding' 'Disable DRC audio' 'Disable QUIC protocol' 'Enable debugging'"
 patcher-args = "-e 'Theme' -OdarkThemeBackgroundColor=@android:color/system_neutral1_900"
 uptodown-dlurl = "https://youtube-music.en.uptodown.com/android"
 
