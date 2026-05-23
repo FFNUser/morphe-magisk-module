@@ -15,9 +15,7 @@ rv-brand = "Morphe"
 build-mode = "module"
 patches-version = "dev"
 arch = "arm64-v8a"
-apkmirror-dlurl = "https://www.apkmirror.com/apk/google-inc/youtube"
 uptodown-dlurl = "https://youtube.en.uptodown.com/android"
-archive-dlurl = "https://archive.org/download/jhc-apks/apks/com.google.android.youtube"
 excluded-patches = "'Alternative thumbnails' 'Ambient mode' 'Change form factor' 'Change start page' 'Copy video URL' 'Custom branding' 'Custom player overlay opacity' 'Disable DRC audio' 'Disable QUIC protocol' 'Disable rolling number animations' 'Disable video codecs' 'Enable debugging' 'Exit fullscreen mode' 'GmsCore support' 'Hide autoplay preview' 'Open videos fullscreen' 'Override YouTube Music actions' 'Seekbar' 'Shorts autoplay'"
 patcher-args = "-e 'Theme' -OdarkThemeBackgroundColor=@android:color/system_neutral1_900 -OlightThemeBackgroundColor=@android:color/system_neutral1_100"
 
@@ -32,9 +30,7 @@ arch = "arm64-v8a"
 build-mode = "module"
 excluded-patches = "'Custom branding' 'Disable DRC audio' 'Disable QUIC protocol' 'Enable debugging' 'GmsCore support'"
 patcher-args = "-e 'Theme' -OdarkThemeBackgroundColor=@android:color/system_neutral1_900"
-apkmirror-dlurl = "https://www.apkmirror.com/apk/google-inc/youtube-music"
 uptodown-dlurl = "https://youtube-music.en.uptodown.com/android"
-archive-dlurl = "https://archive.org/download/jhc-apks/apks/com.google.android.apps.youtube.music"
 
 [IconPackStudio]
 enabled = false
