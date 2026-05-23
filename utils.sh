@@ -530,7 +530,19 @@ patch_apk() {
 
 	if [ "$OS" = Android ]; then cmd+=" --custom-aapt2-binary='${AAPT2}'"; fi
 	pr "$cmd"
-	if eval "$cmd"; then [ -f "$patched_apk" ]; else
+
+	local patch_out
+	local exit_code=0
+	patch_out=$(eval "$cmd" 2>&1 | tee /dev/stderr) || exit_code=$?
+
+	if echo "$patch_out" | grep -q "incompatible with .* but compatible with"; then
+		rm "$patched_apk" 2>/dev/null || :
+		return 1
+	fi
+
+	if [ $exit_code -eq 0 ] && [ -f "$patched_apk" ]; then
+		return 0
+	else
 		rm "$patched_apk" 2>/dev/null || :
 		return 1
 	fi
@@ -595,14 +607,34 @@ build_rv() {
 		version=$version_mode
 		p_patcher_args+=("-f")
 	fi
+	local pkgvers=""
+	if [ "$version_mode" = beta ]; then __AAV__="true"; else __AAV__="false"; fi
+	# Always fetch available versions so we can fallback
+	pkgvers=$(get_"${dl_from}"_vers 2>/dev/null || :)
+
 	if [ $get_latest_ver = true ]; then
-		if [ "$version_mode" = beta ]; then __AAV__="true"; else __AAV__="false"; fi
-		pkgvers=$(get_"${dl_from}"_vers)
 		version=$(get_highest_ver <<<"$pkgvers") || version=$(head -1 <<<"$pkgvers")
 	fi
+
 	if [ -z "$version" ]; then
 		epr "empty version, not building ${table}."
 		return 0
+	fi
+
+	local versions_to_try=()
+	if [ -n "$pkgvers" ]; then
+		local found=false
+		while IFS= read -r v; do
+			if [ -z "$v" ]; then continue; fi
+			if [ "$v" = "$version" ] || [ "$found" = true ]; then
+				found=true
+				versions_to_try+=("$v")
+			fi
+		done <<< "$pkgvers"
+	fi
+
+	if [ ${#versions_to_try[@]} -eq 0 ]; then
+		versions_to_try=("$version")
 	fi
 
 	if [ "$mode_arg" = module ]; then
@@ -613,10 +645,15 @@ build_rv() {
 		build_mode_arr=(apk module)
 	fi
 
+	local build_success=false
+	for try_version in "${versions_to_try[@]}"; do
+		version="$try_version"
+		local version_f=${version// /}
+		version_f=${version_f#v}
+		local stock_apk="${TEMP_DIR}/${pkg_name}-${version_f}-${arch_f}.apk"
+
+
 	pr "Choosing version '${version}' for ${table}"
-	local version_f=${version// /}
-	version_f=${version_f#v}
-	local stock_apk="${TEMP_DIR}/${pkg_name}-${version_f}-${arch_f}.apk"
 	if [ ! -f "$stock_apk" ]; then
 		for dl_p in archive apkmirror uptodown; do
 			if [ -z "${args[${dl_p}_dlurl]}" ]; then continue; fi
@@ -633,11 +670,11 @@ build_rv() {
 			fi
 			break
 		done
-		if [ ! -f "$stock_apk" ]; then return 0; fi
+		if [ ! -f "$stock_apk" ]; then continue; fi
 	fi
 	if [ ! -f "${stock_apk}.apkm" ] && ! OP=$(check_sig "$stock_apk" "$pkg_name" 2>&1) && ! grep -qFx "ERROR: Missing META-INF/MANIFEST.MF" <<<"$OP"; then
 		epr "$pkg_name not building, apk signature mismatch '$stock_apk': $OP"
-		return 0
+		continue
 	fi
 	log "${table}: ${version}"
 
@@ -687,8 +724,10 @@ build_rv() {
 		fi
 		if [ "${NORB:-}" != true ] || [ ! -f "$patched_apk" ]; then
 			if ! patch_apk "$stock_apk_to_patch" "$patched_apk" "${patcher_args[*]}" "${args[cli]}" "${args[ptjar]}"; then
-				epr "Building '${table}' failed!"
-				return 0
+				epr "Building '${table}' failed for version ${version}!"
+				# Continue outer loop (try older version)
+				rm "$stock_apk_to_patch" 2>/dev/null || :
+				continue 2
 			fi
 		fi
 		rm "$stock_apk_to_patch"
@@ -723,6 +762,15 @@ build_rv() {
 		popd >/dev/null || :
 		pr "Built ${table} (root): '${BUILD_DIR}/${module_output}'"
 	done
+
+	build_success=true
+	break
+	done
+
+	if [ "$build_success" = false ]; then
+		epr "All version attempts failed for ${table}."
+		return 1
+	fi
 }
 
 list_args() { tr -d '\t\r' <<<"$1" | tr -s ' ' | sed 's/" "/"\n"/g' | sed 's/\([^"]\)"\([^"]\)/\1'\''\2/g' | grep -v '^$' || :; }
