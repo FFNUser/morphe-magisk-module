@@ -1,4 +1,4 @@
-Music-Morphe: 9.24.51  
+Music-Morphe: 9.25.50  
 YouTube-Morphe: 21.24.367  
 
 Install [Microg](https://github.com/ReVanced/GmsCore/releases) for non-root YouTube and YT Music APKs  
